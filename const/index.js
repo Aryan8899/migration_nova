@@ -2,7 +2,7 @@ import { formatNice } from "coin-format";
 import airDropAbi from "@/abi/air-drop.json";
 import stakingAbi from "@/abi/staking.json";
 export const STAKING_CONTRACT_ADDRESS =
-  "0x9C09B18bc8317DcC40Eace7c72dC2146eB201585";
+  "0xD87a7c492597de7Fa36932250aC90331Da3Eb747";
 export const AIRDROP_CONTRACT_ADDRESS =
   "0x1038832698CA270f610eE728c0Ad901317ad3949";
 export const NOWA_TOKEN = {

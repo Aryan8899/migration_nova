@@ -2,6 +2,7 @@
 
 import {
   abi,
+  AIRDROP_CONTRACT_ADDRESS,
   formatCurrency,
   NOWA_TOKEN,
   STAKING_CONTRACT_ADDRESS,
@@ -21,13 +22,14 @@ import {
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { toast } from "sonner";
 import { useAppKit } from "@reown/appkit/react";
+import { useTimer } from "@/hooks/useTimer";
+import moment from "moment";
 
 const Stake = () => {
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
   const config = useConfig();
 
-  const [fromValue, setFromValue] = useState("");
   const { writeContractAsync, isPending: writeContractPending } =
     useWriteContract();
   const { data: NowaBalance } = useBalance({
@@ -42,136 +44,126 @@ const Stake = () => {
       address: STAKING_CONTRACT_ADDRESS,
       functionName: "minStakeAmount",
     });
+  const { data: airdropInfoData, refetch: refetchAirDropInfo } =
+    useReadContract({
+      abi: abi.AIRDROP_ABI,
+      account: address,
+      address: AIRDROP_CONTRACT_ADDRESS,
+      args: [address],
+      functionName: "airdropInfo",
+    });
+  const { data: claimCooldownData, refetch: claimCooldownDataRefetch } =
+    useReadContract({
+      abi: abi.AIRDROP_ABI,
+      account: address,
+      address: AIRDROP_CONTRACT_ADDRESS,
+      functionName: "claimCooldown",
+    });
 
   const formattedDetails = useMemo(() => {
     const minStakeAmount = minStakeAmountData
       ? formatUnits(minStakeAmountData)
       : 0;
+    const lastClaimTimeStamp = moment
+      .unix(Number(airdropInfoData?.[2]))
+      .add(Number(claimCooldownData), "seconds")
+      ?.toDate();
 
     return {
       minAmount: minStakeAmount,
+      claimRemainTime: lastClaimTimeStamp,
+      isClaimable: moment()?.isSameOrAfter(moment(lastClaimTimeStamp)),
     };
-  }, [minStakeAmountData]);
+  }, [minStakeAmountData, claimCooldownData, airdropInfoData]);
 
-  const refetchHanlder = async () => {};
+  const { seconds, minutes, hours, isRunning, restart } = useTimer(
+    formattedDetails?.claimRemainTime,
+    () => {
+      console.log("hitted");
 
-  const stakeHandler = async () => {
+      refetchHandler();
+    }
+  );
+  const refetchHandler = async () => {
     try {
-      const amount = parseUnits(fromValue);
-      const approveTxn = await writeContractAsync({
-        abi: erc20Abi,
-        account: address,
-        address: NOWA_TOKEN.address,
-        args: [STAKING_CONTRACT_ADDRESS, amount],
-        functionName: "approve",
-      });
-      const transactionReceiptApproval = await waitForTransactionReceipt(
-        config,
-        {
-          hash: approveTxn,
-        }
-      );
-
-      if (transactionReceiptApproval?.transactionHash) {
-        const tx = await writeContractAsync({
-          abi: abi.STAKING_ABI,
-          address: STAKING_CONTRACT_ADDRESS,
-          args: [address, amount],
-          functionName: "stake",
-        });
-        const transactionReceipt = await waitForTransactionReceipt(config, {
-          hash: tx,
-        });
-      }
-
-      toast.success("Claimed successfully");
-      refetchHanlder();
+      await minStakeAmountDataRefetch();
+      await refetchAirDropInfo();
+      await claimCooldownDataRefetch();
     } catch (error) {
-      toast.error(error?.shortMessage || "Something went wrong");
       console.log(error);
-      refetchHanlder();
     }
   };
 
-  const isValid = useMemo(() => {
-    if (!fromValue) {
-      return {
-        isValid: false,
-        message: "",
-      };
+  const claimHandler = async () => {
+    try {
+      const tx = await writeContractAsync({
+        abi: abi.AIRDROP_ABI,
+        address: AIRDROP_CONTRACT_ADDRESS,
+        account: address,
+        functionName: "claim",
+      });
+
+      const transactionReceipt = await waitForTransactionReceipt(config, {
+        hash: tx,
+      });
+      toast.success("Claimed successfully");
+      refetchHandler();
+    } catch (error) {
+      toast.error(error?.shortMessage || "Something went wrong");
+      console.log(error);
+      refetchHandler();
     }
-    if (Number(fromValue) < Number(formattedDetails?.minAmount)) {
-      return {
-        isValid: false,
-        message: "Amount should be greater than min amount",
-      };
-    }
-    if (Number(fromValue) > Number(NowaBalance?.formatted)) {
-      return {
-        isValid: false,
-        message: "Amount exceed wallet balance",
-      };
-    }
-    return {
-      isValid: true,
-      message: "",
-    };
-  }, [fromValue, formattedDetails, NowaBalance]);
+  };
 
   return (
-    <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-6 row-span-8 bg-background p-8 rounded-2xl flex flex-col justify-between">
-      <div className="flex flex-col gap-2">
-        <p>Staking Amount</p>
-        <div>
-          <input
-            type="text"
-            className="bg-sub-card w-full h-12 rounded-2xl mt-1 px-4"
-            placeholder="Amount"
-            value={fromValue}
-            onChange={(e) => {
-              const val = e?.target?.value;
-              const decimal = 8;
-              const regex = new RegExp(`^(\\d*(\\.\\d{0,${decimal}})?)?$`);
-              if (regex.test(val)) {
-                setFromValue(val);
-              }
-            }}
-          />
-          <p className="text-red-500/90 text-xs mt-2">{isValid?.message}</p>
-        </div>
-      </div>
-      <div className="flex justify-between items-center flex-col md:flex-row gap-4 md:gap-0 mt-4 md:mt-0">
-        <p>
-          Min:{" "}
-          {formatCurrency({
-            value: formattedDetails?.minAmount,
-            symbol: "NOWA",
-          })}
-        </p>
-
-        <button
-          className={clsx(
-            "flex bg-primary w-80 rounded-2xl h-10 items-center px-4 cursor-pointer",
-            !isValid?.isValid && "bg-primary/50"
-          )}
-          onClick={() => {
-            if (!isConnected) {
-              open();
-            }
-            if (isValid?.isValid) {
-              stakeHandler();
-            }
-          }}
-        >
-          {isConnected ? (
-            <p className=" grow text-black">Stake</p>
-          ) : (
-            <p className=" grow text-black">Connect Wallet</p>
-          )}
-          <div className="bg-black/30 p-1 rounded-lg">
-            <IconArrowRight color="black" />
+    <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-6 row-span-8 bg-background p-8 rounded-2xl flex flex-col justify-center">
+      <div className="flex flex-col md:flex-row items-center justify-between 2xl:px-14">
+        <img
+          src="/assets/brand/onlyLogo.png"
+          alt=""
+          className="object-contain h-56"
+        />
+        <div className=" md:h-[60%] flex flex-col justify-between mt-8 md:mt-0">
+          <div className="bg-black/30 flex flex-row gap-2 p-2 w-48 justify-between items-center rounded-3xl">
+            <img
+              src="/assets/brand/onlyLogo.png"
+              alt=""
+              className="object-contain h-6"
+            />
+            <p className="text-xl">100.00 NOWA</p>
           </div>
-        </button>
+          <div className=" bg-primary flex justify-between mt-3 px-2 py-1 rounded-lg items-center w-48 ">
+            {formattedDetails?.isClaimable ? (
+              <div
+                className="grow flex items-center justify-center cursor-pointer"
+                onClick={() => {
+                  if (writeContractPending) {
+                    return;
+                  }
+                  claimHandler();
+                }}
+              >
+                <p className="text-black">
+                  {writeContractPending ? `Processing...` : `Claim & Stake`}
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                  {hours}
+                </p>
+                <p className="text-black">:</p>
+                <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                  {minutes}
+                </p>
+                <p className="text-black">:</p>
+                <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                  {seconds}
+                </p>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -108,7 +108,7 @@ const Airdrop = () => {
           <p className="text-4xl font-semibold">5,750</p>
         </div>
         <div className="col-span-12 md:col-span-4 row-span-4 bg-background p-8 rounded-2xl flex items-start flex-col justify-center gap-4">
-          <h1>Total Staked</h1>
+          <h1>My Staked Amount</h1>
           <p className="text-4xl font-semibold">
             {formatCurrency({
               value: formattedDetail?.totalClaimedAmount,
@@ -119,7 +119,7 @@ const Airdrop = () => {
         <div className="col-span-12 md:col-span-8 row-span-4 bg-background p-8 rounded-2xl flex flex-col justify-center">
           <div className="flex justify-between items-start md:items-center flex-col gap-4 md:gap-0 md:flex-row ">
             <div className="flex flex-col gap-4">
-              <h1>Total Earning</h1>
+              <h1>My Earning</h1>
               <p className="text-4xl font-semibold">
                 {formatCurrency({
                   value: formattedDetail?.totalEarning,
