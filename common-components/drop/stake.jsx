@@ -1,14 +1,40 @@
 "use client";
 
-import { abi, formatCurrency, STAKING_CONTRACT_ADDRESS } from "@/const";
+import {
+  abi,
+  formatCurrency,
+  NOWA_TOKEN,
+  STAKING_CONTRACT_ADDRESS,
+} from "@/const";
 import { IconArrowRight } from "@tabler/icons-react";
+import clsx from "clsx";
 import React, { useMemo, useState } from "react";
-import { formatUnits } from "viem";
-import { useAccount, useReadContract } from "wagmi";
+import { erc20Abi } from "viem";
+import { parseUnits, formatUnits } from "ethers";
+import {
+  useAccount,
+  useBalance,
+  useConfig,
+  useReadContract,
+  useWriteContract,
+} from "wagmi";
+import { waitForTransactionReceipt } from "@wagmi/core";
+import { toast } from "sonner";
+import { useAppKit } from "@reown/appkit/react";
 
 const Stake = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
+  const { open } = useAppKit();
+  const config = useConfig();
+
   const [fromValue, setFromValue] = useState("");
+  const { writeContractAsync, isPending: writeContractPending } =
+    useWriteContract();
+  const { data: NowaBalance } = useBalance({
+    address: address,
+    token: NOWA_TOKEN?.address,
+  });
+
   const { data: minStakeAmountData, refetch: minStakeAmountDataRefetch } =
     useReadContract({
       abi: abi.STAKING_ABI,
@@ -27,22 +53,73 @@ const Stake = () => {
     };
   }, [minStakeAmountData]);
 
+  const refetchHanlder = async () => {};
+
+  const stakeHandler = async () => {
+    try {
+      const amount = parseUnits(fromValue);
+      const approveTxn = await writeContractAsync({
+        abi: erc20Abi,
+        account: address,
+        address: NOWA_TOKEN.address,
+        args: [STAKING_CONTRACT_ADDRESS, amount],
+        functionName: "approve",
+      });
+      const transactionReceiptApproval = await waitForTransactionReceipt(
+        config,
+        {
+          hash: approveTxn,
+        }
+      );
+
+      if (transactionReceiptApproval?.transactionHash) {
+        const tx = await writeContractAsync({
+          abi: abi.STAKING_ABI,
+          address: STAKING_CONTRACT_ADDRESS,
+          args: [address, amount],
+          functionName: "stake",
+        });
+        const transactionReceipt = await waitForTransactionReceipt(config, {
+          hash: tx,
+        });
+      }
+
+      toast.success("Claimed successfully");
+      refetchHanlder();
+    } catch (error) {
+      toast.error(error?.shortMessage || "Something went wrong");
+      console.log(error);
+      refetchHanlder();
+    }
+  };
+
   const isValid = useMemo(() => {
-    if (Number(fromValue) > Number(formattedDetails?.minAmount)) {
+    if (!fromValue) {
       return {
         isValid: false,
-        message: "Amount exceed wallet balance.",
+        message: "",
+      };
+    }
+    if (Number(fromValue) < Number(formattedDetails?.minAmount)) {
+      return {
+        isValid: false,
+        message: "Amount should be greater than min amount",
+      };
+    }
+    if (Number(fromValue) > Number(NowaBalance?.formatted)) {
+      return {
+        isValid: false,
+        message: "Amount exceed wallet balance",
       };
     }
     return {
-      isValid: false,
+      isValid: true,
       message: "",
     };
-  }, [fromValue, formattedDetails]);
-  console.log(isValid, "asdasdasd");
+  }, [fromValue, formattedDetails, NowaBalance]);
 
   return (
-    <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-7 row-span-8 bg-background p-8 rounded-2xl flex flex-col justify-between">
+    <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-6 row-span-8 bg-background p-8 rounded-2xl flex flex-col justify-between">
       <div className="flex flex-col gap-2">
         <p>Staking Amount</p>
         <div>
@@ -72,8 +149,25 @@ const Stake = () => {
           })}
         </p>
 
-        <button className="flex bg-primary w-80 rounded-2xl h-10 items-center px-4 cursor-pointer">
-          <p className=" grow text-black">Stake</p>
+        <button
+          className={clsx(
+            "flex bg-primary w-80 rounded-2xl h-10 items-center px-4 cursor-pointer",
+            !isValid?.isValid && "bg-primary/50"
+          )}
+          onClick={() => {
+            if (!isConnected) {
+              open();
+            }
+            if (isValid?.isValid) {
+              stakeHandler();
+            }
+          }}
+        >
+          {isConnected ? (
+            <p className=" grow text-black">Stake</p>
+          ) : (
+            <p className=" grow text-black">Connect Wallet</p>
+          )}
           <div className="bg-black/30 p-1 rounded-lg">
             <IconArrowRight color="black" />
           </div>

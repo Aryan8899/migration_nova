@@ -10,7 +10,7 @@ import {
 } from "@/const";
 import moment from "moment/moment";
 import React, { useMemo } from "react";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, parseUnits } from "ethers";
 import {
   useAccount,
   useBalance,
@@ -21,17 +21,14 @@ import {
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { toast } from "sonner";
 import { useTimer } from "@/hooks/useTimer";
+import { useAppKit } from "@reown/appkit/react";
 
 const AirDropClaim = () => {
   const { writeContractAsync, isPending: writeContractPending } =
     useWriteContract();
   const config = useConfig();
-  const { address } = useAccount();
-  const { data } = useBalance({
-    address: address,
-    token: NOWA_TOKEN?.address,
-  });
-
+  const { address, isConnected } = useAccount();
+  const { open } = useAppKit();
   const { data: airdropInfoData, refetch: refetchAirDropInfo } =
     useReadContract({
       abi: abi.AIRDROP_ABI,
@@ -113,7 +110,7 @@ const AirDropClaim = () => {
   };
 
   return (
-    <div className="col-span-12 row-span-12 md:col-span-4 sm:row-span-6  xl:col-span-2 lg:row-span-8 bg-background rounded-2xl p-4 flex justify-start items-center flex-col">
+    <div className="col-span-12 row-span-12 md:col-span-4 sm:row-span-6  xl:col-span-3 lg:row-span-8 bg-background rounded-2xl p-4 flex justify-start items-center flex-col">
       <h1 className="font-semibold">Get Airdrop</h1>
 
       <div className="relative w-40 flex justify-center items-center   h-48">
@@ -141,37 +138,57 @@ const AirDropClaim = () => {
           })}
         </p>
       </div>
-      <div className="w-[95%] bg-primary flex justify-between mt-3 px-2 py-1 rounded-lg items-center">
-        {airdropInfo?.isClaimable ? (
+      {!isConnected && (
+        <div className="w-[95%] bg-primary flex justify-between mt-3 px-2 py-1 rounded-lg items-center">
           <div
             className="flex grow items-center justify-center cursor-pointer"
             onClick={() => {
-              if (writeContractPending) {
-                return;
+              if (!isConnected) {
+                open();
               }
-              claimHandler();
             }}
           >
-            <p className="text-black">
-              {writeContractPending ? `Claiming..` : `Claim`}
-            </p>
+            <p className="text-black">Connect Wallet</p>
           </div>
-        ) : (
-          <>
-            <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-              {hours}
-            </p>
-            <p className="text-black">:</p>
-            <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-              {minutes}
-            </p>
-            <p className="text-black">:</p>
-            <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-              {seconds}
-            </p>
-          </>
-        )}
-      </div>
+        </div>
+      )}
+      {isConnected && (
+        <div className="w-[95%] bg-primary flex justify-between mt-3 px-2 py-1 rounded-lg items-center">
+          {airdropInfo?.isClaimable ? (
+            <div
+              className="flex grow items-center justify-center cursor-pointer"
+              onClick={() => {
+                if (!isConnected) {
+                  open();
+                }
+                if (writeContractPending) {
+                  return;
+                }
+
+                claimHandler();
+              }}
+            >
+              <p className="text-black">
+                {writeContractPending ? `Claiming..` : `Claim`}
+              </p>
+            </div>
+          ) : (
+            <>
+              <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                {hours}
+              </p>
+              <p className="text-black">:</p>
+              <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                {minutes}
+              </p>
+              <p className="text-black">:</p>
+              <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                {seconds}
+              </p>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import "./globals.css";
 import BlockchainProvider from "@/providers/blockchain-provider";
 import Header from "@/common-components/globals/header";
 import { Toaster } from "sonner";
-
+import "react-circular-progressbar/dist/styles.css";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],

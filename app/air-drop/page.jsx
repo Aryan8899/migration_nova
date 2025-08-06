@@ -96,7 +96,7 @@ const Airdrop = () => {
           journey to smarter earning starts here
         </p>
       </div>
-      <div className="grid grid-cols-12 grid-rows-12  lg:h-[700px] xl:h-[500px] gap-4 mt-20">
+      <div className="grid grid-cols-12 grid-rows-12  lg:h-[700px] xl:h-[600px] gap-4 mt-20">
         <AirDropClaim />
         <div className="col-span-12 lg:col-span-8 xl:col-span-3 row-span-4 bg-background p-4 rounded-2xl flex items-start flex-col justify-center gap-4">
           <h1>Annual Percentage Yield</h1>
