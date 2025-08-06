@@ -13,15 +13,25 @@
     "@reown/appkit-adapter-wagmi": "^1.7.18",
     "@tabler/icons-react": "^3.34.1",
     "@tanstack/react-query": "^5.84.1",
+    "axios": "^1.11.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "coin-format": "^0.0.2",
+    "lucide-react": "^0.536.0",
+    "moment": "^2.30.1",
     "next": "15.4.5",
+    "next-themes": "^0.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.3.1",
     "viem": "^2.33.2",
     "wagmi": "^2.16.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.3.6"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

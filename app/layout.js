@@ -2,6 +2,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import BlockchainProvider from "@/providers/blockchain-provider";
 import Header from "@/common-components/globals/header";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
         <BlockchainProvider>
           <Header />
           {children}
+          <Toaster theme="dark" />
         </BlockchainProvider>
       </body>
     </html>
