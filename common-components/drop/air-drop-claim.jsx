@@ -28,60 +28,45 @@ import {
 } from "react-circular-progressbar";
 
 const AirDropClaim = () => {
-  const { writeContractAsync, isPending: writeContractPending } =
-    useWriteContract();
   const config = useConfig();
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
-  const { data: airdropInfoData, refetch: refetchAirDropInfo } =
+
+  const { data: totalAirdropped, refetch: totalAirdroppedRefetch } =
     useReadContract({
       abi: abi.AIRDROP_ABI,
-      account: address,
       address: AIRDROP_CONTRACT_ADDRESS,
-      args: [address],
-      functionName: "airdropInfo",
+      functionName: "totalAirdropped",
     });
-  const { data: claimAmountData, refetch: claimAmountDataRefetch } =
+  const { data: totalClaimAirdrop, refetch: totalClaimAirdropRefetch } =
     useReadContract({
       abi: abi.AIRDROP_ABI,
-      account: address,
       address: AIRDROP_CONTRACT_ADDRESS,
-      functionName: "claimAmount",
-    });
-  const { data: claimCooldownData, refetch: claimCooldownDataRefetch } =
-    useReadContract({
-      abi: abi.AIRDROP_ABI,
-      account: address,
-      address: AIRDROP_CONTRACT_ADDRESS,
-      functionName: "claimCooldown",
+      functionName: "totalClaimAirdrop",
     });
 
   const airdropInfo = useMemo(() => {
-    const lastClaimTimeStamp = moment
-      .unix(Number(airdropInfoData?.[2]))
-      .add(Number(claimCooldownData), "seconds")
-      ?.toDate();
+    const totalAirDrop = totalAirdropped ? formatUnits(totalAirdropped) : 0;
+    const totalClaimedDrops = totalClaimAirdrop
+      ? formatUnits(totalClaimAirdrop)
+      : 0;
+
+    const leftToClaimDrop = Number(totalAirDrop) - Number(totalClaimedDrops);
+
+    const percentage =
+      Number((Number(leftToClaimDrop) / Number(leftToClaimDrop)) * 100) || 0;
 
     return {
-      claimedBalance: airdropInfoData?.[0]
-        ? formatUnits(airdropInfoData?.[0])
-        : 0,
-      noOfTimedClaimed: airdropInfoData?.[1]
-        ? formatUnits(airdropInfoData?.[1])
-        : 0,
-      lastTimeClaimed: airdropInfoData?.[2]
-        ? formatUnits(airdropInfoData?.[2])
-        : 0,
-      singleClaimableAmount: claimAmountData ? formatUnits(claimAmountData) : 0,
-      isClaimable: moment()?.isSameOrAfter(moment(lastClaimTimeStamp)),
-      claimRemainTime: lastClaimTimeStamp,
+      totalAirDrop,
+      totalClaimedDrops,
+      leftToClaimDrop,
+      percentage,
     };
-  }, [airdropInfoData, claimAmountData, claimCooldownData]);
+  }, [totalAirdropped, totalClaimAirdrop]);
 
   const refetchHanlder = async () => {
-    await refetchAirDropInfo();
-    await claimAmountDataRefetch();
-    await claimCooldownDataRefetch();
+    await totalAirdroppedRefetch();
+    await totalClaimAirdropRefetch();
   };
 
   return (
@@ -90,7 +75,7 @@ const AirDropClaim = () => {
 
       <div className="relative w-40 flex justify-center items-center   h-48">
         <CircularProgressbarWithChildren
-          value={66}
+          value={airdropInfo?.percentage}
           className="fill-primary"
           strokeWidth={10}
           styles={buildStyles({
@@ -111,14 +96,24 @@ const AirDropClaim = () => {
             <div className="h-5 w-5 rounded-full bg-primary" />
             <p>Total Claimed</p>
           </div>
-          <p>1,000</p>
+          <p>
+            {formatCurrency({
+              value: airdropInfo?.totalAirDrop,
+              symbol: "NOWA",
+            })}
+          </p>
         </div>
         <div className="flex flex-row justify-between w-full">
           <div className="flex flex-row gap-2">
             <div className="h-5 w-5 rounded-full bg-card" />
             <p>Left to Claim</p>
           </div>
-          <p>1,000</p>
+          <p>
+            {formatCurrency({
+              value: airdropInfo?.leftToClaimDrop,
+              symbol: "NOWA",
+            })}
+          </p>
         </div>
       </div>
     </div>

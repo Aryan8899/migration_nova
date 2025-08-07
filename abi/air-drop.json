@@ -1,11 +1,16 @@
 [
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalAirdropInWei",
+        "type": "uint256"
+      },
       { "internalType": "uint256", "name": "_claimAmount", "type": "uint256" },
       { "internalType": "address", "name": "_token", "type": "address" },
       {
         "internalType": "uint256",
-        "name": "_claimCooldown",
+        "name": "_claimTimeInMinute",
         "type": "uint256"
       },
       {
@@ -138,13 +143,6 @@
   },
   {
     "inputs": [],
-    "name": "getTotalAirdropped",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "getTotalUniqueWallets",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -188,7 +186,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_cooldown", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_cooldownInMinute",
+        "type": "uint256"
+      }
     ],
     "name": "setClaimCooldown",
     "outputs": [],
@@ -204,6 +206,19 @@
       }
     ],
     "name": "setStackingContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalTokenInWei",
+        "type": "uint256"
+      }
+    ],
+    "name": "setTotalAirdropped",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -225,6 +240,13 @@
   {
     "inputs": [],
     "name": "totalAirdropped",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalClaimAirdrop",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"

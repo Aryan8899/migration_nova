@@ -6,7 +6,7 @@ import { IconArrowRight } from "@tabler/icons-react";
 import { waitForTransactionReceipt } from "@wagmi/core";
 import React, { useMemo } from "react";
 import { toast } from "sonner";
-import { formatUnits } from "viem";
+import { formatUnits } from "ethers";
 import {
   useAccount,
   useConfig,
@@ -41,6 +41,16 @@ const Airdrop = () => {
       functionName: "pendingReward",
     });
 
+  const {
+    data: totalUniqueAddressData,
+    refetch: totalUniqueAddressDataRefetch,
+  } = useReadContract({
+    abi: abi.STAKING_ABI,
+    account: address,
+    address: STAKING_CONTRACT_ADDRESS,
+    functionName: "totalUniqueAddress",
+  });
+
   const formattedDetail = useMemo(() => {
     const apy = Number(apyData) / 100;
     const claimedAmount = totalStakeAmountData
@@ -51,8 +61,16 @@ const Airdrop = () => {
       apy: apy,
       totalClaimedAmount: claimedAmount,
       totalEarning: totalEarning,
+      totalUniqueAddress: totalUniqueAddressData
+        ? Number(totalUniqueAddressData)
+        : 0,
     };
-  }, [apyData, totalStakeAmountData, pendingRewardData]);
+  }, [
+    apyData,
+    totalStakeAmountData,
+    pendingRewardData,
+    totalUniqueAddressData,
+  ]);
 
   const refetchHanlder = async () => {
     try {
@@ -105,7 +123,11 @@ const Airdrop = () => {
         <Stake />
         <div className="col-span-12 md:col-span-4 xl:col-span-3 row-span-4 bg-background p-8 md:p-4 rounded-2xl flex items-start flex-col justify-center gap-4">
           <h1>Total Staked Users</h1>
-          <p className="text-4xl font-semibold">5,750</p>
+          <p className="text-4xl font-semibold">
+            {formatCurrency({
+              value: formattedDetail?.totalUniqueAddress,
+            })}
+          </p>
         </div>
         <div className="col-span-12 md:col-span-4 row-span-4 bg-background p-8 rounded-2xl flex items-start flex-col justify-center gap-4">
           <h1>My Staked Amount</h1>
@@ -131,14 +153,14 @@ const Airdrop = () => {
               <button
                 className="flex bg-primary w-56 rounded-2xl h-10 items-center px-4 cursor-pointer"
                 onClick={() => {
-                  if (writeContractPending) {
-                    return;
-                  }
-                  claimHandler();
+                  // if (writeContractPending) {
+                  //   return;
+                  // }
+                  // claimHandler();
                 }}
               >
                 <p className=" grow text-black">
-                  {writeContractPending ? `Claiming...` : `Claim`}
+                  {writeContractPending ? `Claiming...` : `Coming Soon`}
                 </p>
                 <div className="bg-black/30 p-1 rounded-lg">
                   <IconArrowRight color="black" />

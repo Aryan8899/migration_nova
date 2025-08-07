@@ -44,6 +44,7 @@ const Stake = () => {
       address: STAKING_CONTRACT_ADDRESS,
       functionName: "minStakeAmount",
     });
+
   const { data: airdropInfoData, refetch: refetchAirDropInfo } =
     useReadContract({
       abi: abi.AIRDROP_ABI,
@@ -59,6 +60,13 @@ const Stake = () => {
       address: AIRDROP_CONTRACT_ADDRESS,
       functionName: "claimCooldown",
     });
+  const { data: claimAmountData, refetch: claimAmountDataRefetch } =
+    useReadContract({
+      abi: abi.AIRDROP_ABI,
+      account: address,
+      address: AIRDROP_CONTRACT_ADDRESS,
+      functionName: "claimAmount",
+    });
 
   const formattedDetails = useMemo(() => {
     const minStakeAmount = minStakeAmountData
@@ -73,8 +81,20 @@ const Stake = () => {
       minAmount: minStakeAmount,
       claimRemainTime: lastClaimTimeStamp,
       isClaimable: moment()?.isSameOrAfter(moment(lastClaimTimeStamp)),
+      singleClaimableAmount: claimAmountData ? formatUnits(claimAmountData) : 0,
     };
-  }, [minStakeAmountData, claimCooldownData, airdropInfoData]);
+  }, [minStakeAmountData, claimCooldownData, airdropInfoData, claimAmountData]);
+
+  const refetchHandler = async () => {
+    try {
+      await minStakeAmountDataRefetch();
+      await refetchAirDropInfo();
+      await claimCooldownDataRefetch();
+      await claimAmountDataRefetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const { seconds, minutes, hours, isRunning, restart } = useTimer(
     formattedDetails?.claimRemainTime,
@@ -84,15 +104,6 @@ const Stake = () => {
       refetchHandler();
     }
   );
-  const refetchHandler = async () => {
-    try {
-      await minStakeAmountDataRefetch();
-      await refetchAirDropInfo();
-      await claimCooldownDataRefetch();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const claimHandler = async () => {
     try {
@@ -130,36 +141,56 @@ const Stake = () => {
               alt=""
               className="object-contain h-6"
             />
-            <p className="text-xl">100.00 NOWA</p>
+            <p className="text-xl">
+              {formatCurrency({
+                value: formattedDetails?.singleClaimableAmount,
+                symbol: "NOWA",
+              })}
+            </p>
           </div>
           <div className=" bg-primary flex justify-between mt-3 px-2 py-1 rounded-lg items-center w-48 ">
-            {formattedDetails?.isClaimable ? (
-              <div
-                className="grow flex items-center justify-center cursor-pointer"
-                onClick={() => {
-                  if (writeContractPending) {
-                    return;
-                  }
-                  claimHandler();
-                }}
-              >
-                <p className="text-black">
-                  {writeContractPending ? `Processing...` : `Claim & Stake`}
-                </p>
-              </div>
+            {isConnected ? (
+              <>
+                {formattedDetails?.isClaimable ? (
+                  <div
+                    className="grow flex items-center justify-center cursor-pointer"
+                    onClick={() => {
+                      if (writeContractPending) {
+                        return;
+                      }
+                      claimHandler();
+                    }}
+                  >
+                    <p className="text-black">
+                      {writeContractPending ? `Processing...` : `Claim & Stake`}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                      {hours}
+                    </p>
+                    <p className="text-black">:</p>
+                    <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                      {minutes}
+                    </p>
+                    <p className="text-black">:</p>
+                    <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
+                      {seconds}
+                    </p>
+                  </>
+                )}
+              </>
             ) : (
               <>
-                <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-                  {hours}
-                </p>
-                <p className="text-black">:</p>
-                <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-                  {minutes}
-                </p>
-                <p className="text-black">:</p>
-                <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-                  {seconds}
-                </p>
+                <div
+                  className="grow flex items-center justify-center cursor-pointer"
+                  onClick={() => {
+                    open();
+                  }}
+                >
+                  <p className="text-black">Connect Wallet</p>
+                </div>
               </>
             )}
           </div>
