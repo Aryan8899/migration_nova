@@ -15,10 +15,7 @@ import {
 } from "wagmi";
 
 const Airdrop = () => {
-  const { address } = useAccount();
-  const config = useConfig();
-  const { writeContractAsync, isPending: writeContractPending } =
-    useWriteContract();
+  const { address, isConnected } = useAccount();
   const { data: apyData, refetch: apyDataRefetch } = useReadContract({
     abi: abi.STAKING_ABI,
     account: address,
@@ -59,8 +56,8 @@ const Airdrop = () => {
     const totalEarning = pendingRewardData ? formatUnits(pendingRewardData) : 0;
     return {
       apy: apy,
-      totalClaimedAmount: claimedAmount,
-      totalEarning: totalEarning,
+      totalClaimedAmount: isConnected ? claimedAmount : 0,
+      totalEarning: isConnected ? totalEarning : 0,
       totalUniqueAddress: totalUniqueAddressData
         ? Number(totalUniqueAddressData)
         : 0,
@@ -70,6 +67,7 @@ const Airdrop = () => {
     totalStakeAmountData,
     pendingRewardData,
     totalUniqueAddressData,
+    isConnected,
   ]);
 
   const refetchHanlder = async () => {
@@ -77,30 +75,9 @@ const Airdrop = () => {
       await apyDataRefetch();
       await totalStakeAmountDataRefetch();
       await pendingRewardDataRefetch();
+      await totalUniqueAddressDataRefetch();
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const claimHandler = async () => {
-    try {
-      const tx = await writeContractAsync({
-        abi: abi.STAKING_ABI,
-        address: STAKING_CONTRACT_ADDRESS,
-        account: address,
-        functionName: "claimReward",
-      });
-
-      const transactionReceipt = await waitForTransactionReceipt(config, {
-        hash: tx,
-      });
-      console.log(transactionReceipt, "asdasdasd");
-      toast.success("Claimed successfully");
-      refetchHanlder();
-    } catch (error) {
-      toast.error(error?.shortMessage || "Something went wrong");
-      console.log(error);
-      refetchHanlder();
     }
   };
 
@@ -159,9 +136,7 @@ const Airdrop = () => {
                   // claimHandler();
                 }}
               >
-                <p className=" grow text-black">
-                  {writeContractPending ? `Claiming...` : `Coming Soon`}
-                </p>
+                <p className=" grow text-black">Coming Soon</p>
                 <div className="bg-black/30 p-1 rounded-lg">
                   <IconArrowRight color="black" />
                 </div>

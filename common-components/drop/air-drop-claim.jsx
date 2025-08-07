@@ -20,7 +20,6 @@ import {
 } from "wagmi";
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { toast } from "sonner";
-import { useTimer } from "@/hooks/useTimer";
 import { useAppKit } from "@reown/appkit/react";
 import {
   buildStyles,

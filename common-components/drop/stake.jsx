@@ -9,7 +9,7 @@ import {
 } from "@/const";
 import { IconArrowRight } from "@tabler/icons-react";
 import clsx from "clsx";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { erc20Abi } from "viem";
 import { parseUnits, formatUnits } from "ethers";
 import {
@@ -22,11 +22,14 @@ import {
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { toast } from "sonner";
 import { useAppKit } from "@reown/appkit/react";
-import { useTimer } from "@/hooks/useTimer";
 import moment from "moment";
+import { queryClient } from "@/providers/blockchain-provider";
+import { useTimer } from "react-timer-hook";
 
 const Stake = () => {
   const { address, isConnected } = useAccount();
+  const [claimTime, setClaimTime] = useState(null);
+  const [isClaimable, setIsClaimable] = useState(false);
   const { open } = useAppKit();
   const config = useConfig();
 
@@ -68,6 +71,15 @@ const Stake = () => {
       functionName: "claimAmount",
     });
 
+  const { seconds, minutes, hours, restart, start } = useTimer({
+    expiryTimestamp: claimTime,
+    onExpire: () => {
+      setIsClaimable(true);
+      refetchHandler();
+    },
+    autoStart: false,
+  });
+
   const formattedDetails = useMemo(() => {
     const minStakeAmount = minStakeAmountData
       ? formatUnits(minStakeAmountData)
@@ -76,11 +88,13 @@ const Stake = () => {
       .unix(Number(airdropInfoData?.[2]))
       .add(Number(claimCooldownData), "seconds")
       ?.toDate();
-
+    setIsClaimable(moment()?.isSameOrAfter(moment(lastClaimTimeStamp)));
+    setClaimTime(lastClaimTimeStamp);
+    restart(lastClaimTimeStamp);
     return {
       minAmount: minStakeAmount,
       claimRemainTime: lastClaimTimeStamp,
-      isClaimable: moment()?.isSameOrAfter(moment(lastClaimTimeStamp)),
+
       singleClaimableAmount: claimAmountData ? formatUnits(claimAmountData) : 0,
     };
   }, [minStakeAmountData, claimCooldownData, airdropInfoData, claimAmountData]);
@@ -95,15 +109,6 @@ const Stake = () => {
       console.log(error);
     }
   };
-
-  const { seconds, minutes, hours, isRunning, restart } = useTimer(
-    formattedDetails?.claimRemainTime,
-    () => {
-      console.log("hitted");
-
-      refetchHandler();
-    }
-  );
 
   const claimHandler = async () => {
     try {
@@ -151,7 +156,7 @@ const Stake = () => {
           <div className=" bg-primary flex justify-between mt-3 px-2 py-1 rounded-lg items-center w-48 ">
             {isConnected ? (
               <>
-                {formattedDetails?.isClaimable ? (
+                {isClaimable ? (
                   <div
                     className="grow flex items-center justify-center cursor-pointer"
                     onClick={() => {
