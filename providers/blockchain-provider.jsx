@@ -37,6 +37,12 @@ const modal = createAppKit({
   metadata: metadata,
   features: {
     analytics: true,
+    email: false,
+    socials: [],
+    swaps: false,
+    pay: false,
+    send: false,
+    walletFeaturesOrder: ["receive" | "onramp" | "swaps" | "send"],
   },
 });
 
