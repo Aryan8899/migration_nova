@@ -17,3 +17,5 @@ export const abi = {
 export const formatCurrency = ({ value, symbol }) => {
   return `${formatNice(value)} ${symbol ? symbol : ""}`;
 };
+
+export const base_url = "";
