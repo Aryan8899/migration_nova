@@ -137,7 +137,7 @@ const Stake = ({ flipped, setFlipped }) => {
   }, [flipped]);
 
   return (
-    <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-6 row-span-8 bg-background p-8 rounded-2xl flex flex-col justify-center">
+    <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-6 row-span-8 bg-background p-8 rounded-2xl flex flex-col justify-center ">
       <div className="flex flex-col md:flex-row items-center justify-between 2xl:px-14">
         <img
           src="/assets/brand/onlyLogo.png"

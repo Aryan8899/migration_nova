@@ -72,7 +72,7 @@ const AirDropClaim = ({ flipped, setFlipped }) => {
   }, [flipped]);
 
   return (
-    <div className="col-span-12 row-span-12 md:col-span-4 sm:row-span-6  xl:col-span-3 lg:row-span-8 bg-background rounded-2xl p-6 flex justify-between items-center flex-col">
+    <div className="col-span-12 row-span-12 md:col-span-4 sm:row-span-6  xl:col-span-3 lg:row-span-8 bg-background rounded-2xl p-6 flex justify-between items-center flex-col ">
       <h1 className="font-semibold">Airdrop Phase 1</h1>
 
       <div className="relative w-40 flex justify-center items-center   h-48">

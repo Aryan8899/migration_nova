@@ -1,6 +1,7 @@
 "use client";
 import { useAppKit } from "@reown/appkit/react";
 import { IconWallet } from "@tabler/icons-react";
+import Link from "next/link";
 import React from "react";
 import { useAccount } from "wagmi";
 
@@ -11,11 +12,13 @@ const Header = () => {
   return (
     <div className=" bg-sub-card">
       <div className="container mx-auto flex justify-between items-center">
-        <img
-          src="/assets/brand/Nowa logo horizonatal.svg"
-          alt=""
-          className="object-contain h-16"
-        />
+        <Link href={"/"}>
+          <img
+            src="/assets/brand/Nowa logo horizonatal.svg"
+            alt=""
+            className="object-contain h-16 cursor-pointer"
+          />
+        </Link>
         {isConnected ? (
           <appkit-account-button />
         ) : (

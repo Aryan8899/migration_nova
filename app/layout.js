@@ -5,6 +5,7 @@ import Header from "@/common-components/globals/header";
 import { Toaster } from "sonner";
 import "react-circular-progressbar/dist/styles.css";
 import { headers } from "next/headers";
+import Footer from "@/common-components/globals/footer";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }) {
           <Header />
           {children}
           <Toaster theme="dark" />
+          <Footer />
         </BlockchainProvider>
       </body>
     </html>
