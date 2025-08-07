@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 
 const footerSections = [
@@ -41,7 +42,7 @@ const footerSections = [
 const Footer = () => {
   return (
     <footer className="bg-card mt-20">
-      <div className="mx-auto container">
+      {/* <div className="mx-auto container">
         <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
           {footerSections.map((section) => (
             <div key={section.title}>
@@ -61,16 +62,20 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="px-4 py-6 bg-gray-100 dark:bg-gray-700 md:flex md:items-center md:justify-between">
+        <div className="px-4 py-6 md:flex md:items-center md:justify-between">
           <span className="text-sm text-gray-500 dark:text-gray-300 sm:text-center">
-            © 2023 <a href="https://flowbite.com/">Flowbite™</a>. All Rights
-            Reserved.
+            © {moment().year()} <a href="https://norowry.com/">NOWA</a>. All
+            Rights Reserved.
           </span>
 
           <div className="flex mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse">
-            {/* Social links go here – you can use mapping too if you extract them */}
           </div>
         </div>
+      </div> */}
+      <div className="w-full flex items-center justify-center py-2">
+        <span className="text-sm text-gray-500 dark:text-gray-300 sm:text-center">
+          © {moment().year()} NOWA. All Rights Reserved.
+        </span>
       </div>
     </footer>
   );
