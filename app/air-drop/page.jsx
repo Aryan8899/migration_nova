@@ -4,7 +4,7 @@ import Stake from "@/common-components/drop/stake";
 import { abi, formatCurrency, STAKING_CONTRACT_ADDRESS } from "@/const";
 import { IconArrowRight } from "@tabler/icons-react";
 import { waitForTransactionReceipt } from "@wagmi/core";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatUnits } from "ethers";
 import {
@@ -16,6 +16,7 @@ import {
 
 const Airdrop = () => {
   const { address, isConnected } = useAccount();
+  const [flipped, setFlipped] = useState(false);
   const { data: apyData, refetch: apyDataRefetch } = useReadContract({
     abi: abi.STAKING_ABI,
     account: address,
@@ -80,6 +81,9 @@ const Airdrop = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    refetchHanlder();
+  }, [flipped]);
 
   return (
     <div className="container mx-auto">
@@ -92,12 +96,12 @@ const Airdrop = () => {
         </p>
       </div>
       <div className="grid grid-cols-12 grid-rows-12  lg:h-[700px] xl:h-[600px] gap-4 mt-20">
-        <AirDropClaim />
+        <AirDropClaim flipped={flipped} setFlipped={setFlipped} />
         <div className="col-span-12 lg:col-span-8 xl:col-span-3 row-span-4 bg-background p-4 rounded-2xl flex items-start flex-col justify-center gap-4">
           <h1>Annual Percentage Yield</h1>
           <p className="text-4xl font-semibold">{formattedDetail?.apy}%</p>
         </div>
-        <Stake />
+        <Stake flipped={flipped} setFlipped={setFlipped} />
         <div className="col-span-12 md:col-span-4 xl:col-span-3 row-span-4 bg-background p-8 md:p-4 rounded-2xl flex items-start flex-col justify-center gap-4">
           <h1>Total Staked Users</h1>
           <p className="text-4xl font-semibold">

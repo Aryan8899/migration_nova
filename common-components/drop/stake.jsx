@@ -26,7 +26,7 @@ import moment from "moment";
 import { queryClient } from "@/providers/blockchain-provider";
 import { useTimer } from "react-timer-hook";
 
-const Stake = () => {
+const Stake = ({ flipped, setFlipped }) => {
   const { address, isConnected } = useAccount();
   const [claimTime, setClaimTime] = useState(null);
   const [isClaimable, setIsClaimable] = useState(false);
@@ -128,8 +128,13 @@ const Stake = () => {
       toast.error(error?.shortMessage || "Something went wrong");
       console.log(error);
       refetchHandler();
+    } finally {
+      setFlipped((e) => !e);
     }
   };
+  useEffect(() => {
+    refetchHandler();
+  }, [flipped]);
 
   return (
     <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-6 row-span-8 bg-background p-8 rounded-2xl flex flex-col justify-center">

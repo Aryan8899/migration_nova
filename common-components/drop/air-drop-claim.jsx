@@ -9,7 +9,7 @@ import {
   STAKING_CONTRACT_ADDRESS,
 } from "@/const";
 import moment from "moment/moment";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { formatUnits, parseUnits } from "ethers";
 import {
   useAccount,
@@ -26,7 +26,7 @@ import {
   CircularProgressbarWithChildren,
 } from "react-circular-progressbar";
 
-const AirDropClaim = () => {
+const AirDropClaim = ({ flipped, setFlipped }) => {
   const config = useConfig();
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
@@ -53,7 +53,7 @@ const AirDropClaim = () => {
     const leftToClaimDrop = Number(totalAirDrop) - Number(totalClaimedDrops);
 
     const percentage =
-      Number((Number(leftToClaimDrop) / Number(leftToClaimDrop)) * 100) || 0;
+      Number((Number(totalClaimedDrops) / Number(leftToClaimDrop)) * 100) || 0;
 
     return {
       totalAirDrop,
@@ -67,6 +67,9 @@ const AirDropClaim = () => {
     await totalAirdroppedRefetch();
     await totalClaimAirdropRefetch();
   };
+  useEffect(() => {
+    refetchHanlder();
+  }, [flipped]);
 
   return (
     <div className="col-span-12 row-span-12 md:col-span-4 sm:row-span-6  xl:col-span-3 lg:row-span-8 bg-background rounded-2xl p-6 flex justify-between items-center flex-col">
@@ -97,7 +100,7 @@ const AirDropClaim = () => {
           </div>
           <p>
             {formatCurrency({
-              value: airdropInfo?.totalAirDrop,
+              value: airdropInfo?.totalClaimedDrops,
               symbol: "NOWA",
             })}
           </p>
