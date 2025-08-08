@@ -8,22 +8,34 @@ import "./social.css";
 
 export const Socials = () => {
   return (
-    <div class="card">
-      <a class="socialContainer containerOne" href="#">
+    <div className="card">
+      <a
+        className="socialContainer containerOne"
+        href="https://www.instagram.com/nowatoken/"
+        target="_blank"
+      >
         <IconBrandInstagram className="socialSvg instagramSvg" />
       </a>
 
-      <a class="socialContainer containerTwo" href="#">
+      <a
+        className="socialContainer containerTwo"
+        href="https://x.com/Nowatoken"
+        target="_blank"
+      >
         <IconBrandTwitter className="socialSvg twitterSvg" />
       </a>
 
-      <a class="socialContainer containerThree" href="#">
+      <a
+        className="socialContainer containerThree"
+        href="https://t.me/nowatoken"
+        target="_blank"
+      >
         <IconBrandTelegram className="socialSvg linkdinSvg" />
       </a>
 
-      <a class="socialContainer containerFour" href="#">
+      {/* <a class="socialContainer containerFour" href="#">
         <IconLink className="socialSvg whatsappSvg" />
-      </a>
+      </a> */}
     </div>
   );
 };
