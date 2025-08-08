@@ -115,12 +115,12 @@ const Airdrop = () => {
         </div>
         <div className="grid grid-cols-12 grid-rows-12  lg:h-[700px] xl:h-[600px] gap-4 mt-20">
           <AirDropClaim flipped={flipped} setFlipped={setFlipped} />
-          <div className="col-span-12 lg:col-span-8 xl:col-span-3 row-span-4 bg-background p-4 rounded-2xl flex items-start flex-col justify-center gap-4">
+          <div className="col-span-12 lg:col-span-8 xl:col-span-3 row-span-4 bg-background p-4 md:p-8 rounded-2xl flex items-start flex-col justify-center gap-4">
             <h1>Annual Percentage Yield</h1>
             <p className="text-4xl font-semibold">{formattedDetail?.apy}%</p>
           </div>
           <Stake flipped={flipped} setFlipped={setFlipped} />
-          <div className="col-span-12 md:col-span-4 xl:col-span-3 row-span-4 bg-background p-8 md:p-4 rounded-2xl flex items-start flex-col justify-center gap-4">
+          <div className="col-span-12 md:col-span-4 xl:col-span-3 row-span-4 bg-background p-4 md:p-8 rounded-2xl flex items-start flex-col justify-center gap-4">
             <h1>Total Staked Users</h1>
             <p className="text-4xl font-semibold">
               {formatCurrency({

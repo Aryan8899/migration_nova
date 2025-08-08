@@ -9,28 +9,29 @@ import { ChevronDownIcon } from "lucide-react";
 import { Socials } from "./socials/social";
 const faqs = [
   {
-    question: "How do I create an account on Nowory?",
+    question: "What is the NOWA airdrop and how do I join?",
     answer:
-      "Click on the Sign Up button on the top-right corner, fill in your details, verify your mobile number via OTP, and you're all set.",
+      "The NOWA airdrop is a limited-time event where you can claim free NOWA tokens directly into your connected wallet. To participate, connect your wallet on this page and click the Claim button.",
   },
   {
-    question: "Is my account secure?",
+    question: "What happens after claiming?",
     answer:
-      "Yes. We use industry-standard encryption and authentication methods to ensure your data and funds are protected.",
+      "Once claimed, your NOWA tokens are automatically staked, and you start earning rewards instantly based on the set APY.",
   },
   {
-    question: "How do I deposit funds into my Nowory wallet?",
+    question: "When and how are rewards earned?",
     answer:
-      "Go to the Wallet section, select Deposit, choose your preferred method (INR, USDT, etc.), and follow the instructions.",
+      "Earnings start immediately after staking. Rewards are calculated daily on your staked amount and displayed in real time on the dashboard.",
   },
   {
-    question: "What payment methods do you support?",
-    answer: "We support bank transfers and USDT through crypto wallets.",
+    question: "How much can I claim and how often?",
+    answer:
+      "The number of tokens depends on the available airdrop pool. Each wallet can claim once every 24 hours during the campaign.",
   },
   {
-    question: "How long does it take for a deposit to reflect?",
+    question: "Is there a cost to claim?",
     answer:
-      "INR deposits usually reflect within 5 minutes. Crypto deposits may take a few confirmations on the blockchain.",
+      "Claiming is free, but a small blockchain network BEP-20 (gas) fee may apply for the transaction.",
   },
 ];
 

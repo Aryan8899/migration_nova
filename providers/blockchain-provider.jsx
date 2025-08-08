@@ -26,7 +26,7 @@ export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
     storage: cookieStorage,
   }),
-  ssr: true,
+  ssr: false,
   projectId,
   networks,
 });
@@ -37,7 +37,7 @@ const modal = createAppKit({
   networks: networks,
   metadata: metadata,
   features: {
-    analytics: true,
+    analytics: false,
     email: false,
     socials: [],
     swaps: false,

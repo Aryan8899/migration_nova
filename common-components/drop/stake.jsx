@@ -159,7 +159,7 @@ const Stake = ({ flipped, setFlipped }) => {
               })}
             </p>
           </div>
-          <div className=" bg-primary flex justify-between mt-3 px-2 py-1 rounded-lg items-center w-48 ">
+          <div className=" bg-primary flex justify-between mt-3 px-2 h-10 rounded-2xl items-center w-48 ">
             {isConnected ? (
               <>
                 {isClaimable ? (
