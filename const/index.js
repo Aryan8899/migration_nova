@@ -19,3 +19,47 @@ export const formatCurrency = ({ value, symbol }) => {
 };
 
 export const base_url = "";
+
+export const appConfigurationsMainNet = [
+  {
+    rpc: "https://data-seed-prebsc-1-s1.bnbchain.org:8545/",
+    explorerName: "BscScan",
+    explorerUrl: "https://testnet.bscscan.com/",
+    chainId: 97,
+    chainName: "BNB Smart Chain Testnet",
+    nativeCurrency: {
+      decimals: 18,
+      name: "BNB",
+      symbol: "tBNB",
+    },
+    multicall3Address: "0xca11bde05977b3631167028862be2a173976ca11",
+  },
+];
+
+export const ChainConfig = appConfigurationsMainNet.map((config) => ({
+  id: config.chainId,
+  name: config.chainName,
+  network: config.chainName,
+  iconUrl: config.iconUrl ? config.iconUrl : undefined,
+  nativeCurrency: config.nativeCurrency,
+  rpcUrls: {
+    public: { http: [config.rpc] },
+    default: { http: [config.rpc] },
+  },
+  blockExplorers: {
+    etherscan: {
+      name: config.explorerName,
+      url: config.explorerUrl,
+    },
+    default: {
+      name: config.explorerName,
+      url: config.explorerUrl,
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: config.multicall3Address,
+      blockCreated: config.blockCreated,
+    },
+  },
+}));

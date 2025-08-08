@@ -116,6 +116,7 @@ const Stake = ({ flipped, setFlipped }) => {
         abi: abi.AIRDROP_ABI,
         address: AIRDROP_CONTRACT_ADDRESS,
         account: address,
+
         functionName: "claim",
       });
 
@@ -178,15 +179,15 @@ const Stake = ({ flipped, setFlipped }) => {
                 ) : (
                   <>
                     <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-                      {hours}
+                      {String(hours)?.padStart(2, 0)}
                     </p>
                     <p className="text-black">:</p>
                     <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-                      {minutes}
+                      {String(minutes)?.padStart(2, 0)}
                     </p>
                     <p className="text-black">:</p>
                     <p className="bg-black/30 w-12 h-8 text-center rounded-lg flex items-center justify-center">
-                      {seconds}
+                      {String(seconds)?.padStart(2, 0)}
                     </p>
                   </>
                 )}
@@ -194,7 +195,7 @@ const Stake = ({ flipped, setFlipped }) => {
             ) : (
               <>
                 <div
-                  className="grow flex items-center justify-center cursor-pointer"
+                  className="grow flex items-center justify-center cursor-pointer  w-48 "
                   onClick={() => {
                     open();
                   }}

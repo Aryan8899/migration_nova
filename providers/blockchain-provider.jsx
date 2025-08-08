@@ -10,6 +10,7 @@ import {
 import { arbitrum, bsc, bscTestnet, mainnet } from "@reown/appkit/networks";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { ChainConfig } from "@/const";
 
 export const queryClient = new QueryClient();
 const projectId = "9423e7846505f308df758d42e7c92ff7";
@@ -19,7 +20,7 @@ const metadata = {
   url: "https://example.com",
   icons: ["https://avatars.githubusercontent.com/u/179229932"],
 };
-const networks = [bscTestnet, bsc];
+export const networks = [...ChainConfig];
 
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
