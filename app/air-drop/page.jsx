@@ -1,7 +1,12 @@
 "use client";
 import AirDropClaim from "@/common-components/drop/air-drop-claim";
 import Stake from "@/common-components/drop/stake";
-import { abi, formatCurrency, STAKING_CONTRACT_ADDRESS } from "@/const";
+import {
+  abi,
+  AIRDROP_CONTRACT_ADDRESS,
+  formatCurrency,
+  STAKING_CONTRACT_ADDRESS,
+} from "@/const";
 import { IconArrowRight } from "@tabler/icons-react";
 import { waitForTransactionReceipt } from "@wagmi/core";
 import React, { useEffect, useMemo, useState } from "react";
@@ -49,6 +54,13 @@ const Airdrop = () => {
     address: STAKING_CONTRACT_ADDRESS,
     functionName: "totalUniqueAddress",
   });
+  const { data: userInfo, refetch: userInfoRefetch } = useReadContract({
+    abi: abi.STAKING_ABI,
+    account: address,
+    address: STAKING_CONTRACT_ADDRESS,
+    args: [address],
+    functionName: "userInfo",
+  });
 
   const formattedDetail = useMemo(() => {
     const apy = Number(apyData) / 100;
@@ -56,6 +68,7 @@ const Airdrop = () => {
       ? formatUnits(totalStakeAmountData)
       : 0;
     const totalEarning = pendingRewardData ? formatUnits(pendingRewardData) : 0;
+    const myStaked = userInfo?.[0] ? formatUnits(userInfo?.[0]) : 0;
     return {
       apy: apy,
       totalClaimedAmount: isConnected ? claimedAmount : 0,
@@ -63,6 +76,7 @@ const Airdrop = () => {
       totalUniqueAddress: totalUniqueAddressData
         ? Number(totalUniqueAddressData)
         : 0,
+      myStaked: myStaked,
     };
   }, [
     apyData,
@@ -70,6 +84,7 @@ const Airdrop = () => {
     pendingRewardData,
     totalUniqueAddressData,
     isConnected,
+    userInfo,
   ]);
 
   const refetchHanlder = async () => {
@@ -78,6 +93,7 @@ const Airdrop = () => {
       await totalStakeAmountDataRefetch();
       await pendingRewardDataRefetch();
       await totalUniqueAddressDataRefetch();
+      await userInfoRefetch();
     } catch (error) {
       console.log(error);
     }
@@ -116,7 +132,7 @@ const Airdrop = () => {
             <h1>My Staked Amount</h1>
             <p className="text-4xl font-semibold">
               {formatCurrency({
-                value: formattedDetail?.totalClaimedAmount,
+                value: formattedDetail?.myStaked,
                 symbol: "NOWA",
               })}
             </p>
