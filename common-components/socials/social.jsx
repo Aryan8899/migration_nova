@@ -33,9 +33,13 @@ export const Socials = () => {
         <IconBrandTelegram className="socialSvg linkdinSvg" />
       </a>
 
-      {/* <a class="socialContainer containerFour" href="#">
+      <a
+        class="socialContainer containerFour"
+        href="https://nowory.com"
+        target="_blank"
+      >
         <IconLink className="socialSvg whatsappSvg" />
-      </a> */}
+      </a>
     </div>
   );
 };

@@ -20,7 +20,8 @@ const metadata = {
   url: "https://example.com",
   icons: ["https://avatars.githubusercontent.com/u/179229932"],
 };
-export const networks = [...ChainConfig];
+export const networks = [...ChainConfig]; /////Testnet
+// export const networks = [bsc]; /////Mainnet
 
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
