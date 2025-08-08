@@ -30,7 +30,10 @@ export const metadata = {
     "binance",
   ],
   icons: {
-    icon: "/assets/brand/onlyLogo.png",
+    icon: [
+      "/assets/brand/onlyLogo.png",
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "16x16" },
+    ],
     apple: "/assets/brand/onlyLogo.png",
     shortcut: "/assets/brand/onlyLogo.png",
   },
