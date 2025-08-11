@@ -60,6 +60,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newClaimFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClaimFeeUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "user",
@@ -79,6 +92,19 @@
       }
     ],
     "name": "Claimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "multisigContract",
+        "type": "address"
+      }
+    ],
+    "name": "MultisigContractSet",
     "type": "event"
   },
   {
@@ -128,7 +154,7 @@
     "inputs": [],
     "name": "claim",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -147,6 +173,23 @@
   },
   {
     "inputs": [],
+    "name": "claimFee",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_token", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "emergencyWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getAllClaimedAddresses",
     "outputs": [
       { "internalType": "address[]", "name": "", "type": "address[]" }
@@ -158,6 +201,13 @@
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "name": "hasClaimedBefore",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "multisigContract",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -193,6 +243,28 @@
       }
     ],
     "name": "setClaimCooldown",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_claimFee", "type": "uint256" }
+    ],
+    "name": "setClaimFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_multisigContract",
+        "type": "address"
+      }
+    ],
+    "name": "setMultisigContract",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

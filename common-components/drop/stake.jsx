@@ -71,6 +71,13 @@ const Stake = ({ flipped, setFlipped }) => {
       functionName: "claimAmount",
     });
 
+  const { data: claimFeeData, refetch: claimFeeDataRefetch } = useReadContract({
+    abi: abi.AIRDROP_ABI,
+    account: address,
+    address: AIRDROP_CONTRACT_ADDRESS,
+    functionName: "claimFee",
+  });
+
   const { seconds, minutes, hours, restart, start } = useTimer({
     expiryTimestamp: claimTime,
     onExpire: () => {
@@ -112,12 +119,13 @@ const Stake = ({ flipped, setFlipped }) => {
 
   const claimHandler = async () => {
     try {
+      console.log(claimFeeData, "claimFeeData>>");
       const tx = await writeContractAsync({
         abi: abi.AIRDROP_ABI,
         address: AIRDROP_CONTRACT_ADDRESS,
         account: address,
-
         functionName: "claim",
+        value: claimFeeData,
       });
 
       const transactionReceipt = await waitForTransactionReceipt(config, {
