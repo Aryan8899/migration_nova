@@ -119,7 +119,6 @@ const Stake = ({ flipped, setFlipped }) => {
 
   const claimHandler = async () => {
     try {
-      console.log(claimFeeData, "claimFeeData>>");
       const tx = await writeContractAsync({
         abi: abi.AIRDROP_ABI,
         address: AIRDROP_CONTRACT_ADDRESS,
