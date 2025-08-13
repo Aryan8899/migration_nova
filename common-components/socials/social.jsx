@@ -34,7 +34,7 @@ export const Socials = () => {
       </a>
 
       <a
-        class="socialContainer containerFour"
+        className="socialContainer containerFour"
         href="https://nowory.com"
         target="_blank"
       >
