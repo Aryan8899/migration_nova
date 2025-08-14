@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import "react-circular-progressbar/dist/styles.css";
 import { headers } from "next/headers";
 import Footer from "@/common-components/globals/footer";
+
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -13,6 +14,15 @@ const poppins = Poppins({
   display: "swap",
 });
 
+// ✅ Viewport must be a separate export in Next.js 15+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
+// ✅ Metadata no longer contains viewport
 export const metadata = {
   title:
     "NOWA – AI-Powered Crypto Price Prediction Platform | Predict & Earn with $NOW Token",
@@ -41,7 +51,6 @@ export const metadata = {
     rel: "mask-icon",
     url: "/assets/brand/onlyLogo.png",
   },
-
   robots: {
     index: true,
     follow: true,
@@ -55,18 +64,12 @@ export const metadata = {
       "max-snippet": -1,
     },
   },
-
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
 };
 
 export default async function RootLayout({ children }) {
   const headersObj = await headers();
   const cookies = headersObj.get("cookie");
+
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
