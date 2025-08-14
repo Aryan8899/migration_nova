@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { redirect } from "next/navigation";
+import NOWAMigrationPage from "./air-drop/page";
 
 export default function Home() {
-  return redirect("/air-drop");
+  // Instead of redirecting, render the content directly
+  return <NOWAMigrationPage />;
 }
