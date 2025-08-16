@@ -28,7 +28,7 @@ const NOWAMigrationPage = () => {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-8 sm:mt-12 md:mt-16 max-w-4xl mx-auto">
+        {/* <div className="mt-8 sm:mt-12 md:mt-16 max-w-4xl mx-auto">
           <div className="bg-gray-900 rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-700">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6 text-center">FAQs</h2>
             
@@ -62,10 +62,10 @@ const NOWAMigrationPage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Follow Us Section */}
-        <div className="mt-8 sm:mt-12 text-center">
+        {/* <div className="mt-8 sm:mt-12 text-center">
           <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-4 sm:mb-6">Follow Us</h3>
           <div className="flex justify-center gap-3 sm:gap-4 md:gap-6">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-800 rounded-full flex items-center justify-center border border-gray-600 hover:border-gray-500 transition-colors cursor-pointer">
@@ -81,7 +81,7 @@ const NOWAMigrationPage = () => {
               <span className="text-white text-sm sm:text-base">🔗</span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
