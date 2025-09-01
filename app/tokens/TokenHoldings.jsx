@@ -110,6 +110,29 @@ const TokenHoldings = () => {
             </div>
           </div>
         </div>
+
+        <div className="bg-gray-800 rounded-xl p-18 border border-gray-600 hover:border-gray-500 transition-colors">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-blue-700 flex items-center justify-center">
+                <span className="text-white font-bold text-lg">B</span>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-white">BIGBAIT</h3>
+                <p className="text-sm text-gray-400">BIGBAIT Token</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-700 rounded-lg p-5 mb-4">
+            <div className="text-center">
+              <p className="sm:text-xl md:text-3xl lg:text-3xl font-bold text-white mb-2">
+                {formatCurrency(getRemainingAmount("bigbait"), "BAIT")}
+              </p>
+              <p className="text-sm text-gray-300">Available Balance</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

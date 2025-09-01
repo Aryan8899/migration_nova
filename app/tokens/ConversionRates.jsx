@@ -9,7 +9,8 @@ import { useTransactionHandler } from '../../common-components/hooks/useTransact
 const ConversionRates = () => {
   const [rates, setRates] = useState({
     taralToNOWA: "0",
-    rvlngToNOWA: "0"
+    rvlngToNOWA: "0",
+    bigbaitToNOWA: "0",
   });
 
   const { loading, handleClaimAndStake, canClaimToken } = useTransactionHandler(rates);
@@ -18,7 +19,8 @@ const ConversionRates = () => {
     const fetchRates = async () => {
       setRates({
         taralToNOWA: "2.5",
-        rvlngToNOWA: "1.8"
+        rvlngToNOWA: "1.8",
+        bigbaitToNOWA: "3.2",
       });
     };
     fetchRates();
@@ -31,7 +33,7 @@ const ConversionRates = () => {
       </h2>
 
       <div className="space-y-4 sm:space-y-6">
-        <ConversionCard 
+        <ConversionCard
           fromToken="TARAL"
           toToken="NOWA"
           rate={rates.taralToNOWA}
@@ -42,7 +44,7 @@ const ConversionRates = () => {
           canClaimToken={canClaimToken("TARAL")}
         />
 
-        <ConversionCard 
+        <ConversionCard
           fromToken="RVLNG"
           toToken="NOWA"
           rate={rates.rvlngToNOWA}
@@ -51,6 +53,16 @@ const ConversionRates = () => {
           isLoading={loading.rvlng}
           onClaimAndStake={handleClaimAndStake}
           canClaimToken={canClaimToken("RVLNG")}
+        />
+        <ConversionCard
+          fromToken="BIGBAIT" // CHANGE FROM "BIGBAT"
+          toToken="NOWA"
+          rate={rates.bigbaitToNOWA} // CHANGE FROM rates.bigbatToNOWA
+          color="bg-orange-500"
+          icon="B"
+          isLoading={loading.bigbait} // CHANGE FROM loading.bigbat
+          onClaimAndStake={handleClaimAndStake}
+          canClaimToken={canClaimToken("BIGBAIT")} // CHANGE FROM "BIGBAT"
         />
       </div>
 

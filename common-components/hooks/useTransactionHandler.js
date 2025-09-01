@@ -4,7 +4,8 @@ import { toast } from 'react-toastify';
 export const useTransactionHandler = (rates) => {
   const [loading, setLoading] = useState({
     taral: false,
-    rvlng: false
+    rvlng: false,
+    bigbait: false,
   });
 
   const [userAllocations, setUserAllocations] = useState(null);
@@ -66,14 +67,15 @@ export const useTransactionHandler = (rates) => {
       
       if (data.success) {
         setUserAllocations(data.data.allocations);
-        console.log('User allocations loaded:', data.data.allocations);
-        
-        // Show success message for eligible wallets
-        const totalAllocated = (data.data.allocations.taral?.allocated || 0) + 
-                              (data.data.allocations.rvlng?.allocated || 0);
+        console.log("User allocations loaded:", data.data.allocations);
 
-        console.log('User allocations loaded:', data.data.allocations);
-    
+        // Show success message for eligible wallets
+        const totalAllocated =
+          (data.data.allocations.taral?.allocated || 0) +
+          (data.data.allocations.rvlng?.allocated || 0) +
+          (data.data.allocations.bigbat?.allocated || 0); // ADD THIS
+
+        console.log("User allocations loaded:", data.data.allocations);
       } else {
         console.log('No allocations found for this address');
         setUserAllocations(null);
@@ -83,10 +85,10 @@ export const useTransactionHandler = (rates) => {
     } catch (error) {
       console.error('Error fetching user allocations:', error);
       setUserAllocations(null);
-      toast.error('Failed to fetch wallet allocations', {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      // toast.error('Failed to fetch wallet allocations', {
+      //   position: "top-right",
+      //   autoClose: 5000,
+      // });
     } finally {
       setAllocationLoading(false);
     }
@@ -194,10 +196,10 @@ export const useTransactionHandler = (rates) => {
     const tokenAmount = getTokenAmount(tokenType);
     
     try {
-      const response = await fetch('http://localhost:3001/wallet/claim', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/wallet/claim", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           tokenType: tokenType,
@@ -205,8 +207,16 @@ export const useTransactionHandler = (rates) => {
           transactionHash: transactionData.hash,
           userAddress: transactionData.userAddress,
           timestamp: new Date().toISOString(),
-          conversionRate: tokenType === 'TARAL' ? rates.taralToNOWA : rates.rvlngToNOWA
-        })
+
+          conversionRate:
+            tokenType === "TARAL"
+              ? rates.taralToNOWA
+              : tokenType === "RVLNG"
+              ? rates.rvlngToNOWA
+              : tokenType === "BIGBAIT"
+              ? rates.bigbaitToNOWA
+              : 0, 
+        }),
       });
 
       const data = await response.json();

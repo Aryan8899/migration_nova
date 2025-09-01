@@ -3,12 +3,10 @@ import { useTransactionHandler } from "../../common-components/hooks/useTransact
 
 
 const ConversionRate = ({ rate, fromToken, toToken }) => {
-  const {
-    allocationLoading,
-    getRemainingAmount,
-  } = useTransactionHandler({
-    taralToNOWA: 2.5,   // use your actual rates
+  const { allocationLoading, getRemainingAmount } = useTransactionHandler({
+    taralToNOWA: 2.5, // use your actual rates
     rvlngToNOWA: 1.8,
+    bigbatToNOWA: 3.2
   });
 
   const formatCurrency = (value, symbol) => {

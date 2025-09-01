@@ -41,7 +41,7 @@ const ConversionCard = ({
               isLoading={isLoading}
               onClick={async () => {
                 await onClaimAndStake(fromToken);
-               // window.location.reload(); // refresh page after success
+                window.location.reload(); // refresh page after success
               }}
               disabled={!canClaimToken}
               className={`w-full sm:w-auto ${
