@@ -334,10 +334,20 @@ export const useTransactionHandler = (rates) => {
       await fetchUserAllocations(userAddress);
 
       toast.dismiss(loadingToastId);
-      toast.success(`🎉 ${tokenType} tokens (${getTokenAmount(tokenType)}) claimed successfully!`, {
+    toast.success(
+      `🎉 ${tokenType} tokens (${getTokenAmount(
+        tokenType
+      )}) claimed successfully!`,
+      {
         position: "top-right",
-        autoClose: 5000,
-      });
+        autoClose: 2000, // 2 seconds
+        onClose: () => {
+          // Trigger full page reload after toast disappears
+          window.location.reload();
+        },
+      }
+    );
+
 
     } catch (error) {
       console.error(`Error in claim & stake for ${tokenType}:`, error);
